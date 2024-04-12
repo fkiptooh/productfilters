@@ -1,6 +1,8 @@
 "use client"
+import { Products } from "@/components/product/product";
+import { ProductSkeleton } from "@/components/product/product-skeleton";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Product } from "@/db";
+import type { Product as TProduct } from "@/db";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { QueryResult } from "@upstash/vector";
@@ -21,7 +23,7 @@ export default function Home() {
   const { data: products } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
-      const { data } = await axios.post<QueryResult<Product>[]>(
+      const { data } = await axios.post<QueryResult<TProduct>[]>(
         'http://localhost:3000/api/products',
         {
           sort: filter.sort
@@ -69,7 +71,11 @@ export default function Home() {
 
           {/* product grid */}
           <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            
+            {products ? products.map((product) => (
+              <Products product={product.metadata!} key={product.id}/>
+            )) :  new Array(12).fill(null).map((_, i) => (
+              <ProductSkeleton key={i}/>
+            ))}
           </div>
         </div>
       </section>
