@@ -86,6 +86,9 @@ export default function Home() {
         "http://localhost:3000/api/products",
         {
           sort: filter.sort,
+          color: filter.color,
+          price: filter.price,
+          size: filter.size
         }
       );
       return data;
