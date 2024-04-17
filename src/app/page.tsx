@@ -20,7 +20,6 @@ import { useQuery } from "@tanstack/react-query";
 import { QueryResult } from "@upstash/vector";
 import axios from "axios";
 import { ChevronDown, Filter } from "lucide-react";
-import { Turret_Road } from "next/font/google";
 import { useState } from "react";
 
 const SORT_OPTIONS = [
@@ -85,10 +84,12 @@ export default function Home() {
       const { data } = await axios.post<QueryResult<TProduct>[]>(
         "http://localhost:3000/api/products",
         {
-          sort: filter.sort,
-          color: filter.color,
-          price: filter.price,
-          size: filter.size
+          filter: {
+            sort: filter.sort,
+            color: filter.color,
+            price: filter.price.range,
+            size: filter.size,
+          },
         }
       );
       return data;
@@ -322,9 +323,9 @@ export default function Home() {
                             ...prev,
                             price: {
                               isCustom: true,
-                              range: [newMin, newMax]
-                            }
-                          }))
+                              range: [newMin, newMax],
+                            },
+                          }));
                         }}
                         value={
                           filter.price.isCustom

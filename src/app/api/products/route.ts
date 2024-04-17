@@ -26,10 +26,10 @@ class Filter {
   get() {
     const parts: string[] = [];
     this.filters.forEach((filter) => {
-      const groupedValue = filter.join(` OR `);
+      const groupedValue = filter.join(` OR `)
       parts.push(`(${groupedValue})`);
     });
-    return parts.join(" AND ");
+    return parts.join(' AND ');
   }
 }
 export const POST = async (req: NextRequest) => {
@@ -37,10 +37,17 @@ export const POST = async (req: NextRequest) => {
   const { color, price, size, sort } = ProductFilterValidator.parse(
     body.filter
   );
+
+  const filter = new Filter();
+  color.forEach((color) => filter.add('color', '=', color))
+  size.forEach((size) => filter.add('size', '=', size));
+  filter.addRaw('price', `price >= ${price[0]} AND price <= ${price[1]}`);
+
   const products = await db.query({
     topK: 12,
-    vector: [0, 0, 0],
+    vector: [0, 0, 30],
     includeMetadata: true,
+    filter: filter.hasFilter() ? filter.get() : undefined
   });
 
   return NextResponse.json(products);
