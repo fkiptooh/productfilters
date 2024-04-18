@@ -33,6 +33,7 @@ class Filter {
   }
 }
 export const POST = async (req: NextRequest) => {
+  try {
   const body = await req.json();
   const { color, price, size, sort } = ProductFilterValidator.parse(
     body.filter
@@ -43,13 +44,23 @@ export const POST = async (req: NextRequest) => {
   size.forEach((size) => filter.add('size', '=', size));
   filter.addRaw('price', `price >= ${price[0]} AND price <= ${price[1]}`);
 
+  const AVG_PRODUCT_PRICE = 25;
+  const MAX_PRODUCT_PRICE = 100;
+  
   const products = await db.query({
     topK: 12,
-    vector: [0, 0, 30],
+    vector: [0, 0, sort === "none" ? AVG_PRODUCT_PRICE : sort === "price-asc" ? 0 : MAX_PRODUCT_PRICE ],
     includeMetadata: true,
     filter: filter.hasFilter() ? filter.get() : undefined
   });
 
   return NextResponse.json(products);
+  } catch (error) {
+    // i.e log error to sentry
+
+    console.log(error);
+
+    return new Response(JSON.stringify({message: "Internal server error"}), { status: 500 })
+  }
   // return new Response(JSON.stringify(products))
 };

@@ -20,7 +20,8 @@ import { useQuery } from "@tanstack/react-query";
 import { QueryResult } from "@upstash/vector";
 import axios from "axios";
 import { ChevronDown, Filter } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import debounce from "lodash.debounce";
 
 const SORT_OPTIONS = [
   { name: "None", value: "none" },
@@ -78,7 +79,7 @@ export default function Home() {
   });
 
   console.log(filter);
-  const { data: products } = useQuery({
+  const { data: products, refetch } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
       const { data } = await axios.post<QueryResult<TProduct>[]>(
@@ -95,6 +96,12 @@ export default function Home() {
       return data;
     },
   });
+
+  const onSubmit = () => refetch();
+
+  const debounceSubmit = debounce(onSubmit, 400);
+  const _debounceSubmit = useCallback(debounceSubmit, [])
+
   const applyArrayFilter = ({
     category,
     value,
@@ -115,6 +122,8 @@ export default function Home() {
         [category]: [...prev[category], value],
       }));
     }
+
+    _debounceSubmit();
   };
 
   // console.log(products);
