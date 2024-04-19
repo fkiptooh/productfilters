@@ -150,12 +150,13 @@ export default function Home() {
                     "text-gray-900 bg-gray-100": option.value === filter.sort,
                     "text-gray-500": option.value !== filter.sort,
                   })}
-                  onClick={() =>
+                  onClick={() => {
                     setFilter((prev) => ({
                       ...prev,
                       sort: option.value,
                     }))
-                  }
+                    _debounceSubmit();
+                  }}
                 >
                   {option.name}
                 </button>
@@ -269,6 +270,7 @@ export default function Home() {
                                 range: [...option.value],
                               },
                             }));
+                            _debounceSubmit();
                           }}
                           checked={
                             !filter.price.isCustom &&
@@ -298,6 +300,7 @@ export default function Home() {
                                 range: [0, 100],
                               },
                             }));
+                            _debounceSubmit();
                           }}
                           checked={filter.price.isCustom}
                           className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
@@ -335,6 +338,7 @@ export default function Home() {
                               range: [newMin, newMax],
                             },
                           }));
+                          _debounceSubmit();
                         }}
                         value={
                           filter.price.isCustom
