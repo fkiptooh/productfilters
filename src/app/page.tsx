@@ -22,6 +22,7 @@ import axios from "axios";
 import { ChevronDown, Filter } from "lucide-react";
 import { useCallback, useState } from "react";
 import debounce from "lodash.debounce";
+import { EmptyState } from "@/components/product/empty-state";
 
 const SORT_OPTIONS = [
   { name: "None", value: "none" },
@@ -100,7 +101,7 @@ export default function Home() {
   const onSubmit = () => refetch();
 
   const debounceSubmit = debounce(onSubmit, 400);
-  const _debounceSubmit = useCallback(debounceSubmit, [])
+  const _debounceSubmit = useCallback(debounceSubmit, []);
 
   const applyArrayFilter = ({
     category,
@@ -154,7 +155,7 @@ export default function Home() {
                     setFilter((prev) => ({
                       ...prev,
                       sort: option.value,
-                    }))
+                    }));
                     _debounceSubmit();
                   }}
                 >
@@ -359,13 +360,17 @@ export default function Home() {
 
           {/* product grid */}
           <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            {products
-              ? products.map((product) => (
-                  <Products product={product.metadata!} key={product.id} />
-                ))
-              : new Array(12)
-                  .fill(null)
-                  .map((_, i) => <ProductSkeleton key={i} />)}
+            {products && products.length === 0 ? (
+              <EmptyState />
+            ) : products ? (
+              products.map((product) => (
+                <Products product={product.metadata!} key={product.id} />
+              ))
+            ) : (
+              new Array(12)
+                .fill(null)
+                .map((_, i) => <ProductSkeleton key={i} />)
+            )}
           </div>
         </div>
       </section>
