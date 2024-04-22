@@ -1,1 +1,4 @@
-test
+- test
+- add other collections; electronics, hoodies, etc
+- build a checkout system
+- optimize search.
