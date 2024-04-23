@@ -2,3 +2,4 @@
 - add other collections; electronics, hoodies, etc
 - build a checkout system
 - optimize search.
+- implement a read-only db alongside primary db for performance improvement
