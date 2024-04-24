@@ -3,3 +3,5 @@
 - build a checkout system
 - optimize search.
 - implement a read-only db alongside primary db for performance improvement
+- integrate clerk(authentication)
+- planet scale db integration and measure performance against the vector db.
