@@ -6,3 +6,4 @@
 - integrate clerk(authentication)
 - planet scale db integration and measure performance against the vector db.
 - adopt an organized folder structure.
+- write test
